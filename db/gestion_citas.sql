@@ -1,7 +1,7 @@
 
 CREATE DATABASE gestion_citas;
 USE gestion_citas;
-
+SELECT * FROM cita WHERE cit_medico = 123456;
 CREATE TABLE usuario(
     usu_id INT NOT NULL PRIMARY KEY,
     usu_nombre VARCHAR(50) NOT NULL,
