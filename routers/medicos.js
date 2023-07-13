@@ -1,6 +1,7 @@
 import { Router } from "express";
 import mysql from "mysql2";
 import dotenv from "dotenv";
+import ProxyCantEspecialidades from "../middleware/proxyCantEspecialidades.js";
 
 dotenv.config();
 
@@ -19,10 +20,11 @@ appMedicos.get("/cantidad", (req, res) => [
   }),
 ]);
 
-appMedicos.get("/cantidad/especialidad/:med_especialidad", (req, res) => [
+appMedicos.get("/cantidad/especialidad/",//trae la cantidad de especialidades que hay
+ProxyCantEspecialidades ,(req, res) => [  //?codigo=2
   con.query(
     /*sql*/ `SELECT * FROM medico WHERE med_especialidad = ?`,
-    [req.params.med_especialidad],
+    [req.query.codigo],
     (err, data, fils) => {
       res.send(data);
     }
