@@ -2,6 +2,7 @@ import { Router } from "express";
 import dotenv from "dotenv";
 import mysql from "mysql2";
 import proxyUser from "../middleware/proxyUsuarios.js";
+import proxyGeneroCitaEstado from "../middleware/ProxyGeneroCitasestado.js";
 dotenv.config();
 
 const appClientes = Router();
@@ -55,15 +56,23 @@ appClientes.get("/cantidad/info/:id_uso", (req, res) => {
   );
 });
 
-appClientes.get("/cantidad/genero/:cit_estadoCita/:usu_genero", (req, res) => {
-  con.query(
-    /*sql*/ `SELECT usu_nombre,cit_estadoCita,usu_genero FROM usuario INNER JOIN cita  ON usuario.usu_id=cita.cit_datosUsuario WHERE cit_estadoCita = ? AND usu_genero = ?`,
-    [req.params.cit_estadoCita, req.params.usu_genero],
-    (err, data, fils) => {
-      res.send(data);
-    }
-  );
-});
+appClientes.get(
+  "/cantidad/genero/",//?estado=1&genero=1
+  proxyGeneroCitaEstado,
+  (req, res) => {
+    // muestra los generos y el estado de sus citas
+    con.query(
+      /*sql*/ `SELECT usu_nombre,cit_estadoCita,usu_genero FROM usuario INNER JOIN cita  ON usuario.usu_id=cita.cit_datosUsuario WHERE cit_estadoCita = ? AND usu_genero = ?`,
+      [req.query.estado,req.query.genero],
+      (err, data, fils) => {
+        if (err) {
+          res.send(err);
+        }
+        res.send(data);
+      }
+    );
+  }
+);
 
 appClientes.post("/cantidad/create", proxyUser, (req, res) => {
   con.query(
